@@ -14,6 +14,8 @@ export class AuthServiceImpl implements AuthService {
             });
 
             if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error en la solicitud de login:', response.status, errorData);
                 return null;
             }
 
@@ -28,7 +30,7 @@ export class AuthServiceImpl implements AuthService {
                 token,
             };
         } catch (error) {
-            console.error(error);
+            console.error('Error al intentar iniciar sesión:', error);
             return null;
         }
     }
