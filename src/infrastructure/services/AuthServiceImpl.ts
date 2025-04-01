@@ -3,18 +3,37 @@ import { AuthService } from "../../core/ports/AuthService";
 
 export class AuthServiceImpl implements AuthService {
     async login(email: string, password: string): Promise<User | null> {
-        if (email === "user@example.com" && password === "password"){
-            return{
-                id: "1",
-                email,
-                name: "Jhon Doe",
-                token: "fake-jwt-token",
+        try {
+            const response = await fetch('http://localhost:8090/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                return null;
+            }
+
+            const data = await response.json();
+            const userData = data.data;
+            const token = data.token;
+
+            return {
+                id: userData.id,
+                name: userData.name,
+                email: userData.email,
+                token,
             };
+        } catch (error) {
+            console.error(error);
+            return null;
         }
-        return null;
     }
-    
+
     async logout(): Promise<void> {
-        throw new Error("Method not implemented.");
+        throw new Error("Método no implementado.");
     }
 }
