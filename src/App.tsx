@@ -1,26 +1,38 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import SignInForm from './ui/components/auth/SignInForm';
-import SignUpForm from './ui/components/auth/SignUpForm';
-import Dashboard from '.ui/pages/Dashboard/Home';
-import ProtectedRoute from './ui/components/ProtectedRoute';
+import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router";
+import { ScrollToTop } from "./ui/components/common/ScrollToTop";
+import AppLayout from "./ui/layout/AppLayout";
+import SignIn from "./ui/pages/AuthPages/SignIn";
+import SignUp from "./ui/pages/AuthPages/SignUp";
+import Home from "./ui/pages/Dashboard/Home";
+import ProtectedRoute from "./ui/components/ProtectedRoute";
 
-function App() {
+export default function App() {
     return (
-        <Router>
-            <Routes>
-                <Route path="/signin" element={<SignInForm />} />
-                <Route path="/signup" element={<SignUpForm />} />
-                <Route
-                    path="/"
-                    element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    }
-                />
-            </Routes>
-        </Router>
+        <>
+            <Router>
+                <ScrollToTop />
+                <Routes>
+                    {/* Dashboard Layout */}
+                    <Route element={<AppLayout />}>
+                        <Route
+                            index
+                            path="/"
+                            element={
+                                <ProtectedRoute>
+                                    <Home />
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Route>
+
+                    {/* Auth Layout */}
+                    <Route path="/signin" element={<SignIn />} />
+                    <Route path="/signup" element={<SignUp />} />
+
+                    {/* Redirigir cualquier ruta no encontrada a /signin */}
+                    <Route path="*" element={<Navigate to="/signin" replace />} />
+                </Routes>
+            </Router>
+        </>
     );
 }
-
-export default App;
